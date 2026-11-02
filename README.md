@@ -62,6 +62,10 @@ The plugin targets .NET Framework 4.8, which is built into Windows 10 and 11.
 `.\build.ps1` runs the tests, builds the plugin and writes `dist\MusicBee-StarryKaraoke-<version>.zip`.
 It needs the .NET SDK and builds for .NET Framework 4.8.
 
+## License
+
+MIT — see [LICENSE](LICENSE).
+
 ## Third-party components
 
 NMeCab, IPADic and RomajiCore keep their own licenses, included in the release zip under

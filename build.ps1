@@ -22,6 +22,7 @@ Copy-Item "$bin\mb_StarryKaraoke.dll", "$bin\RomajiCore.dll", "$bin\LibNMeCab.dl
 Copy-Item "$bin\IpaDic\*" "$stage\RomajiLyrics\IpaDic"
 Copy-Item (Join-Path $root 'licenses\*') "$stage\StarryKaraoke\licenses"
 Copy-Item (Join-Path $root 'README.md') "$stage\StarryKaraoke\README.md"
+Copy-Item (Join-Path $root 'LICENSE') "$stage\StarryKaraoke\LICENSE.txt"
 
 $zip = "$stage.zip"
 if (Test-Path $zip) { Remove-Item $zip }
