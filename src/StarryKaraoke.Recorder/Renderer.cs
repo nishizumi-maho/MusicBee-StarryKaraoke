@@ -52,10 +52,10 @@ namespace StarryKaraoke.Recorder
                     startMs = Math.Max(0, skip + s.LyricsOffsetMs);
                 var total = (int)Math.Ceiling((_job.DurationMs - startMs) / 1000.0 * fps);
 
-                Status?.Invoke("Testando o codificador de vídeo...");
+                Status?.Invoke("Testing the video encoder...");
                 var encoder = PickEncoder();
                 var workers = Math.Max(1, Math.Min(Math.Min(8, Environment.ProcessorCount / 3), total / (fps * 4)));
-                Status?.Invoke($"Renderizando em {workers} partes ({EncoderName(encoder)})...");
+                Status?.Invoke($"Rendering in {workers} parts ({EncoderName(encoder)})...");
 
                 var bounds = Enumerable.Range(0, workers + 1).Select(k => (int)((long)total * k / workers)).ToArray();
                 var parts = Enumerable.Range(0, workers).Select(k => Path.Combine(work, $"part{k:00}.mp4")).ToArray();
@@ -76,7 +76,7 @@ namespace StarryKaraoke.Recorder
                 if (failed != null) throw failed;
                 if (_cancel) throw new OperationCanceledException();
 
-                Status?.Invoke("Juntando as partes com o áudio...");
+                Status?.Invoke("Joining the parts with the audio...");
                 var list = Path.Combine(work, "parts.txt");
                 File.WriteAllLines(list, parts.Select(p => "file '" + p.Replace("'", "'\\''") + "'"));
                 var seek = startMs > 0 ? "-ss " + (startMs / 1000).ToString("0.000", CultureInfo.InvariantCulture) + " " : "";
@@ -127,7 +127,7 @@ namespace StarryKaraoke.Recorder
             });
             var err = p.StandardError.ReadToEnd();
             p.WaitForExit();
-            if (p.ExitCode != 0) throw new Exception("ffmpeg falhou (código " + p.ExitCode + "):\n" + err.Trim());
+            if (p.ExitCode != 0) throw new Exception("ffmpeg failed (code " + p.ExitCode + "):\n" + err.Trim());
         }
 
         // ---------------------------------------------------------------- one segment
@@ -216,7 +216,7 @@ namespace StarryKaraoke.Recorder
                 }
                 stdin.Close();
                 ff.WaitForExit();
-                if (ff.ExitCode != 0) throw new Exception("ffmpeg falhou (código " + ff.ExitCode + "):\n" + ffErr.Trim());
+                if (ff.ExitCode != 0) throw new Exception("ffmpeg failed (code " + ff.ExitCode + "):\n" + ffErr.Trim());
             }
             catch
             {

@@ -1,60 +1,60 @@
-# Starry Karaoke: plugin do MusicBee (design)
+# Starry Karaoke: MusicBee plugin (design)
 
-Plugin novo e independente do Desktop Lyrics. Tem projeto, repositório e DLL próprios
-(`mb_StarryKaraoke.dll`) e não toca no Desktop Lyrics nem no Lyrics Panel (BETA).
+A new plugin, independent of Desktop Lyrics. It has its own project, repository and DLL
+(`mb_StarryKaraoke.dll`) and does not touch Desktop Lyrics or the Lyrics Panel (BETA).
 
-## O que faz
+## What it does
 
-- **Janela:** abre em *View > Starry Karaoke*. É uma janela normal redimensionável, com F11 ou
-  duplo clique para tela cheia e Esc para sair dela. A posição e o tamanho ficam salvos.
-- **Visual:** o mesmo do vídeo da NOX LUX.
-  - Céu noturno em degradê, com estrelas piscando.
-  - No topo, "✦ título — artista ✦".
-  - Linha atual no meio, com as anteriores e as próximas apagadas acima e abaixo.
-  - `♪ ♪ ♪` pulsando nos intervalos instrumentais e contagem regressiva antes da primeira linha.
-  - Barra de progresso dourada embaixo.
-- **Letra:** é a que o MusicBee carrega (`NowPlaying_GetLyrics`), num parser próprio de LRC:
-  - LRC simples e vários timestamps por linha;
+- **Window:** opens under *View > Starry Karaoke*. It is a normal resizable window, with F11 or
+  double-click for fullscreen and Esc to leave it. Position and size are saved.
+- **Look:** the same as the NOX LUX video.
+  - A night-sky gradient with twinkling stars.
+  - At the top, "✦ title — artist ✦".
+  - The current line in the middle, with the previous and next lines dimmed above and below.
+  - `♪ ♪ ♪` pulsing during instrumental breaks and a countdown before the first line.
+  - A gold progress bar at the bottom.
+- **Lyrics:** the ones MusicBee loads (`NowPlaying_GetLyrics`), through its own LRC parser:
+  - simple LRC and multiple timestamps per line;
   - `[offset:]`;
-  - LRC com tempo por palavra (`<mm:ss.xx>`, como o LYRICS BOCA gera), que acende palavra por
-    palavra;
-  - sem tempo por palavra, o brilho percorre a linha num tempo estimado.
-- **Romaji:** usa o RomajiCore com NMeCab, a mesma engine do Desktop Lyrics, e o dicionário que já
-  está em `Plugins\RomajiLyrics\IpaDic`. O romaji segue o tempo das palavras.
-- **Japonês:** é uma configuração, com três opções: só romaji, japonês com romaji embaixo, ou só
-  japonês.
+  - LRC with per-word timing (`<mm:ss.xx>`, as LYRICS BOCA writes it), lighting up word by
+    word;
+  - without per-word timing, the highlight sweeps across each line over an estimated time.
+- **Romaji:** uses RomajiCore with NMeCab, the same engine as Desktop Lyrics, and the dictionary
+  already in `Plugins\RomajiLyrics\IpaDic`. The romaji follows the word timing.
+- **Japanese:** a setting with three options: romaji only, Japanese with romaji below, or
+  Japanese only.
 
-## Transições
+## Transitions
 
-- **Borda suave:** o preenchimento dourado avança com a borda esfumada (máscara em degradê) e um
-  glow, em vez de um corte seco.
-- **Fade na troca de linha:** a linha que entra clareia e a que sai escurece aos poucos (cerca de
+- **Soft edge:** the gold fill advances with a feathered edge (gradient mask) and a
+  glow, instead of a hard cut.
+- **Line-change fade:** the incoming line brightens and the outgoing one dims gradually (about
   350 ms).
-- **Linha atual cresce:** a linha cantada aumenta até cerca de 108% e volta ao tamanho normal
-  quando termina.
-- **Rolagem macia:** as linhas deslizam para a nova posição com ease-in-out.
+- **Current line grows:** the sung line grows to about 108% and returns to normal size
+  when it ends.
+- **Smooth scrolling:** lines slide to their new position with ease-in-out.
 
-## Configurações
+## Settings
 
-Ficam numa janela própria, aberta pelo botão direito na janela ou pelas preferências do plugin no
-MusicBee:
+They live in their own window, opened by right-clicking the window or from the plugin's
+preferences in MusicBee:
 
-- fonte e tamanho;
-- cores: aceso, apagado, glow e fundo;
-- modo do japonês;
-- quantidade de estrelas, ligar ou desligar as estrelas;
-- velocidade das transições;
-- atraso da letra (ms);
-- mostrar ou esconder o cabeçalho e a barra de progresso.
+- font and size;
+- colors: lit, unlit, glow and background;
+- Japanese mode;
+- number of stars, stars on or off;
+- transition speed;
+- lyrics delay (ms);
+- show or hide the header and the progress bar.
 
-As configurações são salvas em JSON na pasta de dados do MusicBee.
+Settings are saved as JSON in MusicBee's data folder.
 
-## Como é feito
+## How it is built
 
-- .NET Framework 4.8, como o Desktop Lyrics.
-- A janela é **WPF**, que desenha com aceleração de hardware. Glow (BlurEffect), máscara de
-  opacidade em degradê, escala e fade saem lisos a 60 fps mesmo em tela cheia. Com GDI+, como no
-  Desktop Lyrics, isso ficaria pesado.
-- O RomajiCore entra como cópia em `external/RomajiCore`, para o repositório se manter sozinho.
-- Testes unitários (xunit) para o parser, os tempos por caractere e o romaji por palavra.
-- `build.ps1` gera o zip, com o conteúdo pronto para ir na pasta Plugins.
+- .NET Framework 4.8, like Desktop Lyrics.
+- The window is **WPF**, which draws with hardware acceleration. Glow (BlurEffect), a
+  gradient opacity mask, scale and fade run smoothly at 60 fps even in fullscreen. With GDI+, as in
+  Desktop Lyrics, that would be heavy.
+- RomajiCore is included as a copy in `external/RomajiCore`, so the repository stays self-contained.
+- Unit tests (xunit) for the parser, the per-character timings and the per-word romaji.
+- `build.ps1` produces the zip, with contents ready to go into the Plugins folder.

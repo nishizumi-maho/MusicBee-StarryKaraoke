@@ -101,7 +101,7 @@ namespace MusicBeePlugin
                         var item = _mb.MB_AddMenuItem("mnuView/Starry Karaoke", "Starry Karaoke: open the karaoke window",
                                                       (s, e) => OnUi(Toggle));
                         Log("menu item: " + (item?.Text ?? "null"));
-                        _mb.MB_AddMenuItem("mnuTools/Starry Karaoke: gravar vídeo da música", "Starry Karaoke: record a karaoke video of the playing song",
+                        _mb.MB_AddMenuItem("mnuTools/Starry Karaoke: record song video", "Starry Karaoke: record a karaoke video of the playing song",
                                            (s, e) => OnUi(RecordVideo));
                         if (_settings.WindowOpen) OnUi(Open);
                     }
@@ -231,16 +231,16 @@ namespace MusicBeePlugin
         {
             var dll = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "";
             var exe = Path.Combine(dll, "StarryKaraoke.Recorder.exe");
-            if (!File.Exists(exe)) { Message("StarryKaraoke.Recorder.exe não está na pasta Plugins."); return; }
+            if (!File.Exists(exe)) { Message("StarryKaraoke.Recorder.exe is not in the Plugins folder."); return; }
             var japanese = _settings.Japanese;
             ThreadPool.QueueUserWorkItem(_ =>
             {
                 try
                 {
                     var audio = _mb.NowPlaying_GetFileUrl();
-                    if (string.IsNullOrEmpty(audio) || !File.Exists(audio)) { OnUi(() => Message("Nenhuma música local tocando.")); return; }
+                    if (string.IsNullOrEmpty(audio) || !File.Exists(audio)) { OnUi(() => Message("No local song is playing.")); return; }
                     var lrc = PickLyrics();
-                    if (string.IsNullOrEmpty(lrc)) { OnUi(() => Message("Esta música não tem letra sincronizada.")); return; }
+                    if (string.IsNullOrEmpty(lrc)) { OnUi(() => Message("This song has no synced lyrics.")); return; }
                     double duration = _mb.NowPlaying_GetDuration();
                     var title = _mb.NowPlaying_GetFileTag(MetaDataType.TrackTitle) ?? Path.GetFileNameWithoutExtension(audio);
                     var artist = _mb.NowPlaying_GetFileTag(MetaDataType.Artist) ?? "";
@@ -261,8 +261,8 @@ namespace MusicBeePlugin
             string target;
             using (var dlg = new SaveFileDialog
             {
-                Title = "Gravar vídeo karaokê",
-                Filter = "Vídeo MP4 (*.mp4)|*.mp4",
+                Title = "Record karaoke video",
+                Filter = "MP4 video (*.mp4)|*.mp4",
                 FileName = SafeName((string.IsNullOrEmpty(artist) ? "" : artist + " - ") + title + " (karaoke)") + ".mp4",
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
                 OverwritePrompt = true

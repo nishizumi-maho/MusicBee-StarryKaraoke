@@ -278,17 +278,17 @@ namespace MusicBeePlugin
         private ContextMenu BuildMenu()
         {
             var menu = new ContextMenu();
-            var full = new MenuItem { Header = _fullscreen ? "Sair da tela cheia (Esc)" : "Tela cheia (F11)" };
+            var full = new MenuItem { Header = _fullscreen ? "Exit fullscreen (Esc)" : "Fullscreen (F11)" };
             full.Click += (s, e) => SetFullscreen(!_fullscreen);
             menu.Items.Add(full);
-            var skip = new MenuItem { Header = "Pular introdução (P)" };
+            var skip = new MenuItem { Header = "Skip intro (P)" };
             skip.Click += (s, e) => SkipIntroRequested?.Invoke(this, EventArgs.Empty);
             menu.Items.Add(skip);
 
-            var jp = new MenuItem { Header = "Japonês" };
-            foreach (var (mode, label) in new[] { (JapaneseMode.RomajiOnly, "Só romaji"),
-                                                  (JapaneseMode.JapaneseAndRomaji, "Japonês + romaji"),
-                                                  (JapaneseMode.JapaneseOnly, "Só japonês") })
+            var jp = new MenuItem { Header = "Japanese" };
+            foreach (var (mode, label) in new[] { (JapaneseMode.RomajiOnly, "Romaji only"),
+                                                  (JapaneseMode.JapaneseAndRomaji, "Japanese + romaji"),
+                                                  (JapaneseMode.JapaneseOnly, "Japanese only") })
             {
                 var item = new MenuItem { Header = label, IsCheckable = true, IsChecked = _settings.Japanese == mode };
                 item.Click += (s, e) => JapaneseModeChosen?.Invoke(mode);
@@ -296,15 +296,15 @@ namespace MusicBeePlugin
             }
             menu.Items.Add(jp);
 
-            var record = new MenuItem { Header = "Gravar vídeo da música..." };
+            var record = new MenuItem { Header = "Record song video..." };
             record.Click += (s, e) => RecordRequested?.Invoke(this, EventArgs.Empty);
             menu.Items.Add(record);
 
-            var settings = new MenuItem { Header = "Configurações..." };
+            var settings = new MenuItem { Header = "Settings..." };
             settings.Click += (s, e) => SettingsRequested?.Invoke(this, EventArgs.Empty);
             menu.Items.Add(settings);
             menu.Items.Add(new Separator());
-            var close = new MenuItem { Header = "Fechar" };
+            var close = new MenuItem { Header = "Close" };
             close.Click += (s, e) => Close();
             menu.Items.Add(close);
             return menu;

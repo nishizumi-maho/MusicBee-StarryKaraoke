@@ -46,13 +46,13 @@ namespace MusicBeePlugin
             seekRow.Children.Add(_length);
             seekRow.Children.Add(_seek);
 
-            _playPause = IconButton("", "Tocar / pausar (espaço)", 30, () => _controls.PlayPause?.Invoke());
+            _playPause = IconButton("", "Play / pause (space)", 30, () => _controls.PlayPause?.Invoke());
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 6, 0, 0) };
-            buttons.Children.Add(IconButton("", "Faixa anterior", 20, () => _controls.Previous?.Invoke()));
-            buttons.Children.Add(IconButton("", "Voltar 10 s (←)", 20, () => Jump(-10000)));
+            buttons.Children.Add(IconButton("", "Previous track", 20, () => _controls.Previous?.Invoke()));
+            buttons.Children.Add(IconButton("", "Back 10 s (←)", 20, () => Jump(-10000)));
             buttons.Children.Add(_playPause);
-            buttons.Children.Add(IconButton("", "Avançar 10 s (→)", 20, () => Jump(10000)));
-            buttons.Children.Add(IconButton("", "Próxima faixa", 20, () => _controls.Next?.Invoke()));
+            buttons.Children.Add(IconButton("", "Forward 10 s (→)", 20, () => Jump(10000)));
+            buttons.Children.Add(IconButton("", "Next track", 20, () => _controls.Next?.Invoke()));
 
             var stack = new StackPanel();
             stack.Children.Add(seekRow);

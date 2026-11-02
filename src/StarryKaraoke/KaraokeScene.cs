@@ -225,7 +225,7 @@ namespace MusicBeePlugin
             if (_s.ShowProgress && !LyricsOnly && !HideProgress) DrawProgress(dc, size, t, layer);
             if (_blocks.Count == 0)
             {
-                if (layer == Layer.Text) DrawCentered(dc, size, _songMs < 0 ? "" : "sem letra sincronizada", _basePx * 0.6, _dim, size.Height / 2);
+                if (layer == Layer.Text) DrawCentered(dc, size, _songMs < 0 ? "" : "no synced lyrics", _basePx * 0.6, _dim, size.Height / 2);
                 return;
             }
 

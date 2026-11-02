@@ -36,7 +36,7 @@ namespace StarryKaraoke.Recorder
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Starry Karaoke — gravar vídeo", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(e.Message, "Starry Karaoke — record video", MessageBoxButton.OK, MessageBoxImage.Error);
                 return 1;
             }
         }
@@ -74,8 +74,8 @@ namespace StarryKaraoke.Recorder
             { job.Width = w & ~1; job.Height = h & ~1; }
             job.Fps = Math.Max(10, Math.Min(240, job.Settings.VideoFps));
             job.Ffmpeg = FindFfmpeg(a.TryGetValue("ffmpeg", out var f) ? f : job.Settings.FfmpegPath);
-            if (!File.Exists(job.Audio)) throw new FileNotFoundException("Áudio não encontrado: " + job.Audio);
-            if (job.DurationMs <= 0) throw new ArgumentException("Duração da música desconhecida.");
+            if (!File.Exists(job.Audio)) throw new FileNotFoundException("Audio not found: " + job.Audio);
+            if (job.DurationMs <= 0) throw new ArgumentException("Unknown song duration.");
             return job;
         }
 
@@ -96,7 +96,7 @@ namespace StarryKaraoke.Recorder
             }
             var winget = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "WinGet", "Links", "ffmpeg.exe");
             if (File.Exists(winget)) return winget;
-            throw new FileNotFoundException("ffmpeg.exe não encontrado. Instale o ffmpeg (por exemplo: winget install Gyan.FFmpeg) ou indique o caminho nas configurações do Starry Karaoke.");
+            throw new FileNotFoundException("ffmpeg.exe not found. Install ffmpeg (for example: winget install Gyan.FFmpeg) or set its path in the Starry Karaoke settings.");
         }
     }
 
@@ -104,15 +104,15 @@ namespace StarryKaraoke.Recorder
     {
         private readonly ProgressBar _bar = new ProgressBar { Height = 18, Minimum = 0, Maximum = 1 };
         private readonly TextBlock _status = new TextBlock { Margin = new Thickness(0, 8, 0, 0) };
-        private readonly Button _cancel = new Button { Content = "Cancelar", Width = 96 };
-        private readonly Button _open = new Button { Content = "Abrir pasta", Width = 96, Margin = new Thickness(0, 0, 8, 0), Visibility = Visibility.Collapsed };
+        private readonly Button _cancel = new Button { Content = "Cancel", Width = 96 };
+        private readonly Button _open = new Button { Content = "Open folder", Width = 96, Margin = new Thickness(0, 0, 8, 0), Visibility = Visibility.Collapsed };
         private readonly Stopwatch _watch = Stopwatch.StartNew();
         private readonly Renderer _renderer;
         private bool _done;
 
         public ProgressWindow(Job job)
         {
-            Title = "Starry Karaoke — gravando vídeo";
+            Title = "Starry Karaoke — recording video";
             Width = 460;
             SizeToContent = SizeToContent.Height;
             ResizeMode = ResizeMode.CanMinimize;
@@ -127,7 +127,7 @@ namespace StarryKaraoke.Recorder
             buttons.Children.Add(_cancel);
             panel.Children.Add(buttons);
             Content = panel;
-            _status.Text = $"Preparando ({job.Width}×{job.Height}, {job.Fps} fps)...";
+            _status.Text = $"Preparing ({job.Width}×{job.Height}, {job.Fps} fps)...";
 
             _renderer = new Renderer(job);
             var phase = "";
@@ -137,21 +137,21 @@ namespace StarryKaraoke.Recorder
                 _bar.Value = (double)i / n;
                 var el = _watch.Elapsed.TotalSeconds;
                 var eta = i > 0 ? el / i * (n - i) : 0;
-                _status.Text = $"{phase}\n{100.0 * i / n:0}%  ·  quadro {i}/{n}  ·  falta {TimeSpan.FromSeconds(eta):m\\:ss}";
+                _status.Text = $"{phase}\n{100.0 * i / n:0}%  ·  frame {i}/{n}  ·  {TimeSpan.FromSeconds(eta):m\\:ss}";
                 TaskbarProgress(i, n);
             }));
             _renderer.Finished += e => Dispatcher.BeginInvoke((Action)(() =>
             {
                 _done = true;
-                _cancel.Content = "Fechar";
+                _cancel.Content = "Close";
                 if (e == null)
                 {
                     _bar.Value = 1;
-                    _status.Text = $"Pronto em {_watch.Elapsed:m\\:ss}.";
+                    _status.Text = $"Done in {_watch.Elapsed:m\\:ss}.";
                     _open.Visibility = Visibility.Visible;
                 }
-                else if (e is OperationCanceledException) _status.Text = "Cancelado. Nenhum arquivo foi gravado.";
-                else _status.Text = "Erro: " + e.Message;
+                else if (e is OperationCanceledException) _status.Text = "Cancelled. No file was written.";
+                else _status.Text = "Error: " + e.Message;
             }));
             _open.Click += (s, e) => Process.Start("explorer.exe", "/select,\"" + job.Out + "\"");
             _cancel.Click += (s, e) => { if (_done) Close(); else { _renderer.Cancel(); _cancel.IsEnabled = false; } };
